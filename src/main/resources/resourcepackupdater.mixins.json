@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cn.zbx1425.resourcepackupdater.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "FolderPackResourcesMixin",
+    "MinecraftMixin",
+    "MultiPackResourceManagerMixin",
+    "OptionsMixin"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
