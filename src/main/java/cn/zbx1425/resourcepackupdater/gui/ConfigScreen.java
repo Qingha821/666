@@ -29,19 +29,25 @@ public class ConfigScreen extends Screen {
         int btnWidthOuter = (width - PADDING * 2) / 2;
         int btnWidthInner = btnWidthOuter - PADDING * 2;
 
-        Button btnShowLog = new Button(PADDING + PADDING, 40, btnWidthInner, 20, Text.translatable("Show Logs from Last Run"), (btn) -> {
+        Button btnShowLog = new Button.Builder(Text.translatable("Show Logs from Last Run"), (btn) -> {
             isShowingLog = true;
-        }, Button.DEFAULT_NARRATION);
+        }).dimensions(PADDING + PADDING, 40, btnWidthInner, 20)
+                .narration(Button.DEFAULT_NARRATION)
+                .build();
 
-        Button btnReload = new Button(PADDING + btnWidthOuter + PADDING, 40, btnWidthInner, 20, Text.translatable("Update & Reload"), (btn) -> {
+        Button btnReload = new Button.Builder(Text.translatable("Update & Reload"), (btn) -> {
             assert minecraft != null;
             minecraft.reloadResourcePacks();
-        }, Button.DEFAULT_NARRATION);
+        }).dimensions(PADDING + btnWidthOuter + PADDING, 40, btnWidthInner, 20)
+                .narration(Button.DEFAULT_NARRATION)
+                .build();
 
-        Button btnReturn = new Button(PADDING + btnWidthOuter + PADDING, height - 40, btnWidthInner, 20, Text.translatable("Return"), (btn) -> {
+        Button btnReturn = new Button.Builder(Text.translatable("Return"), (btn) -> {
             assert minecraft != null;
             minecraft.setScreen(null);
-        }, Button.DEFAULT_NARRATION);
+        }).dimensions(PADDING + btnWidthOuter + PADDING, height - 40, btnWidthInner, 20)
+                .narration(Button.DEFAULT_NARRATION)
+                .build();
 
         addRenderableWidget(btnShowLog);
         addRenderableWidget(btnReload);
@@ -49,7 +55,7 @@ public class ConfigScreen extends Screen {
 
         int btnY = 90;
         for (Config.SourceProperty source : ResourcePackUpdater.CONFIG.sourceList.value) {
-            Button btnUseSource = new Button(PADDING + PADDING, btnY, btnWidthInner, 20, Text.translatable(source.name), (btn) -> {
+            Button btnUseSource = new Button.Builder(Text.translatable(source.name), (btn) -> {
                 ResourcePackUpdater.CONFIG.selectedSource.value = source;
                 try {
                     ResourcePackUpdater.CONFIG.save();
@@ -57,11 +63,15 @@ public class ConfigScreen extends Screen {
                     e.printStackTrace();
                 }
                 updateBtnEnable();
-            }, Button.DEFAULT_NARRATION);
+            }).dimensions(PADDING + PADDING, btnY, btnWidthInner, 20)
+                    .narration(Button.DEFAULT_NARRATION)
+                    .build();
+
             sourceButtons.put(source, btnUseSource);
             btnY += 20;
             addRenderableWidget(btnUseSource);
         }
+
         updateBtnEnable();
     }
 
