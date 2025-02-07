@@ -33,21 +33,18 @@ public class ConfigScreen extends Screen {
         Button btnShowLog = new Button.Builder(Text.translatable("Show Logs from Last Run"), (btn) -> {
             isShowingLog = true;
         }).bounds(PADDING + PADDING, 40, btnWidthInner, 20)
-                .narrationSupplier(Button.createNarrationMessage())
                 .build();
 
         Button btnReload = new Button.Builder(Text.translatable("Update & Reload"), (btn) -> {
             assert minecraft != null;
             minecraft.reloadResourcePacks();
         }).bounds(PADDING + btnWidthOuter + PADDING, 40, btnWidthInner, 20)
-                .narrationSupplier(Button.createNarrationMessage())
                 .build();
 
         Button btnReturn = new Button.Builder(Text.translatable("Return"), (btn) -> {
             assert minecraft != null;
             minecraft.setScreen(null);
         }).bounds(PADDING + btnWidthOuter + PADDING, height - 40, btnWidthInner, 20)
-                .narrationSupplier(Button.createNarrationMessage())
                 .build();
 
         addRenderableWidget(btnShowLog);
@@ -65,7 +62,6 @@ public class ConfigScreen extends Screen {
                 }
                 updateBtnEnable();
             }).bounds(PADDING + PADDING, btnY, btnWidthInner, 20)
-                    .narrationSupplier(Button.createNarrationMessage())
                     .build();
 
             sourceButtons.put(source, btnUseSource);
