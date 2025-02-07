@@ -20,7 +20,6 @@ public class ConfigScreen extends Screen {
     }
 
     private boolean isShowingLog = false;
-
     private final HashMap<Config.SourceProperty, Button> sourceButtons = new HashMap<>();
 
     @Override
@@ -29,17 +28,21 @@ public class ConfigScreen extends Screen {
         final int PADDING = 10;
         int btnWidthOuter = (width - PADDING * 2) / 2;
         int btnWidthInner = btnWidthOuter - PADDING * 2;
+
         Button btnShowLog = new Button(PADDING + PADDING, 40, btnWidthInner, 20, Text.translatable("Show Logs from Last Run"), (btn) -> {
             isShowingLog = true;
-        });
+        }, Button.DEFAULT_NARRATION);
+
         Button btnReload = new Button(PADDING + btnWidthOuter + PADDING, 40, btnWidthInner, 20, Text.translatable("Update & Reload"), (btn) -> {
             assert minecraft != null;
             minecraft.reloadResourcePacks();
-        });
+        }, Button.DEFAULT_NARRATION);
+
         Button btnReturn = new Button(PADDING + btnWidthOuter + PADDING, height - 40, btnWidthInner, 20, Text.translatable("Return"), (btn) -> {
             assert minecraft != null;
             minecraft.setScreen(null);
-        });
+        }, Button.DEFAULT_NARRATION);
+
         addRenderableWidget(btnShowLog);
         addRenderableWidget(btnReload);
         addRenderableWidget(btnReturn);
@@ -54,7 +57,7 @@ public class ConfigScreen extends Screen {
                     e.printStackTrace();
                 }
                 updateBtnEnable();
-            });
+            }, Button.DEFAULT_NARRATION);
             sourceButtons.put(source, btnUseSource);
             btnY += 20;
             addRenderableWidget(btnUseSource);
