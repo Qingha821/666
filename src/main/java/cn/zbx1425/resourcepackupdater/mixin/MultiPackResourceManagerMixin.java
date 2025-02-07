@@ -3,12 +3,10 @@ package cn.zbx1425.resourcepackupdater.mixin;
 import cn.zbx1425.resourcepackupdater.ResourcePackUpdater;
 import cn.zbx1425.resourcepackupdater.gui.gl.PreloadTextureResource;
 import net.minecraft.resources.ResourceLocation;
-#if MC_VERSION >= "11800"
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
-#else
-import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
-#endif
 import net.minecraft.server.packs.resources.Resource;
+import java.util.List;
+import net.minecraft.server.packs.PackResources;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
