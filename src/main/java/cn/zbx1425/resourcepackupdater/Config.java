@@ -51,9 +51,9 @@ public class Config {
         "disableBuiltinSources", JsonElement::getAsBoolean, JsonPrimitive::new, false);
     public final ConfigItem<Boolean> pauseWhenSuccess = new ConfigItem<>(
         "pauseWhenSuccess", JsonElement::getAsBoolean, JsonPrimitive::new, false);
-    public final ConfigItem<Path> packBaseDirFile = new ConfigItem<Path>(
-        "packBaseDirFile", (json) -> Paths.get(json.getAsString()),
-            (value) -> new JsonPrimitive(value.toString()), () -> Paths.get(getPackBaseDir()));
+    public final ConfigItem<File> packBaseDirFile = new ConfigItem<File>(
+        "packBaseDirFile", (json) -> new File(json.getAsString()),
+            (value) -> new JsonPrimitive(value.toString()), () -> new File(getPackBaseDir()));
 
     public final ConfigItem<String> serverLockKey = new ConfigItem<>(
         "serverLockKey", JsonElement::getAsString, JsonPrimitive::new, "");
@@ -87,7 +87,7 @@ public class Config {
                         .build();
                 HttpResponse<String> httpResponse;
                 try {
-                    httpResponse = ResourcePackUpdaterClient.HTTP_CLIENT.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+                    httpResponse = ResourcePackUpdater.HTTP_CLIENT.send(httpRequest, HttpResponse.BodyHandlers.ofString());
                 } catch (InterruptedException ex) {
                     throw new IOException(ex);
                 }

@@ -104,7 +104,7 @@ public class Dispatcher {
             cb.amendLastLog("Done");
 
             remoteMetadata.beginDownloads(cb);
-            cb.printLog("Downloading files ... ");
+            cb.printLog("Downloading files ...");
             DownloadDispatcher downloadDispatcher = new DownloadDispatcher(cb);
             for (String file : Stream.concat(filesToCreate.stream(), filesToUpdate.stream()).toList()) {
                 DownloadTask task = new DownloadTask(downloadDispatcher,

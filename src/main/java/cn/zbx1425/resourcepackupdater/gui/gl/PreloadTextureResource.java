@@ -1,17 +1,11 @@
 package cn.zbx1425.resourcepackupdater.gui.gl;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
-import java.util.Set;
 
 #if MC_VERSION >= "11900"
 public class PreloadTextureResource extends Resource {
@@ -19,50 +13,50 @@ public class PreloadTextureResource extends Resource {
 public class PreloadTextureResource implements Resource {
 #endif
 
+    private final ResourceLocation resourceLocation;
+
     public PreloadTextureResource(ResourceLocation resourceLocation) {
-        super(new DummyPackResources(), () ->
-            Objects.requireNonNull(PreloadTextureResource.class.getResourceAsStream("/assets/" + resourceLocation.getNamespace() + "/" + resourceLocation.getPath()))
-        );
+#if MC_VERSION >= "11900"
+        super(resourceLocation.toDebugFileName(), InputStream::nullInputStream);
+#endif
+        this.resourceLocation = resourceLocation;
     }
 
-    public static class DummyPackResources implements PackResources {
-
-        @Nullable
-        @Override
-        public IoSupplier<InputStream> getRootResource(String... elements) {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public IoSupplier<InputStream> getResource(PackType packType, ResourceLocation location) {
-            return null;
-        }
-
-        @Override
-        public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
-
-        }
-
-        @Override
-        public Set<String> getNamespaces(PackType type) {
-            return Set.of();
-        }
-
-        @Nullable
-        @Override
-        public <T> T getMetadataSection(MetadataSectionSerializer<T> deserializer) throws IOException {
-            return null;
-        }
-
-        @Override
-        public String packId() {
-            return "";
-        }
-
-        @Override
-        public void close() {
-
-        }
+#if MC_VERSION >= "11900"
+    @Override
+    public InputStream open() {
+        return getClass().getResourceAsStream("/assets/" + resourceLocation.getNamespace() + "/" + resourceLocation.getPath());
     }
+#else
+    @Override
+    public ResourceLocation getLocation() {
+        return resourceLocation;
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return getClass().getResourceAsStream("/assets/" + resourceLocation.getNamespace()
+                + "/" + resourceLocation.getPath());
+    }
+
+    @Override
+    public boolean hasMetadata() {
+        return false;
+    }
+
+    @Override
+    public <T> T getMetadata(MetadataSectionSerializer<T> metadataSectionSerializer) {
+        return null;
+    }
+
+    @Override
+    public String getSourceName() {
+        return resourceLocation.toDebugFileName();
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+#endif
 }

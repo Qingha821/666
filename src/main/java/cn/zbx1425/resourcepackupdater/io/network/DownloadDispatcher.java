@@ -45,7 +45,7 @@ public class DownloadDispatcher {
                         task.runBlocking(target.get());
                         if (task.failedAttempts > 0) {
                             delayedProgresses.add(() -> {
-                                progressReceiver.printLog(String.format("Downloading files ... (Retry %d succeed)",
+                                progressReceiver.printLogOutsidePolling(String.format("Downloading files ... (Retry %d succeed)",
                                         task.failedAttempts));
                             });
                         }
@@ -54,9 +54,9 @@ public class DownloadDispatcher {
                         task.failedAttempts++;
                         if (task.failedAttempts < MAX_RETRIES) {
                             delayedProgresses.add(() -> {
-                                progressReceiver.printLog(String.format("Retry (%d/%d) for %s due to error:",
+                                progressReceiver.printLogOutsidePolling(String.format("Retry (%d/%d) for %s due to error:",
                                         task.failedAttempts, MAX_RETRIES, task.fileName));
-                                progressReceiver.printLog(String.format("Retry %d: %s", task.failedAttempts, ex.toString()));
+                                progressReceiver.printLogOutsidePolling(String.format("Retry %d: %s", task.failedAttempts, ex.toString()));
                             });
                         } else {
                             throw ex;
@@ -65,7 +65,7 @@ public class DownloadDispatcher {
                 }
             } catch (Exception e) {
                 taskException = e;
-                executor.shutdown();
+                executor.shutdownNow();
                 runningTasks.clear();
                 incompleteTasks.clear();
             } finally {
@@ -98,7 +98,7 @@ public class DownloadDispatcher {
         String runningProgress = incompleteTasks.size() + " Files Remaining\n" +
                 String.join("\n", runningTasks.stream()
                 .map(task -> "  " + (
-                        task.totalBytes == 0 ? "WAIT" :
+                    task.totalBytes == 0 ? "WAIT" :
                         String.format("%.1f%%", task.downloadedBytes * 100f / task.totalBytes)
                 ) + "\t"
                 + (task.failedAttempts > 0 ? "(RETRY " + task.failedAttempts + ") " : "")

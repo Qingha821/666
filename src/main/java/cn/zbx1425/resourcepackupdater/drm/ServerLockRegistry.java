@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.Objects;
 
 public class ServerLockRegistry {
@@ -25,14 +24,14 @@ public class ServerLockRegistry {
 
     private static boolean serverLockPrefetched = false;
 
-    public static void updateLocalServerLock(Path rpFolder) {
+    public static void updateLocalServerLock(File rpFolder) {
         if (lockAllSyncedPacks) {
             localServerLock = null; // So that when no longer lockAllSyncedPacks, the pack will reload
             return;
         }
         try {
             JsonObject metaObj = ResourcePackUpdater.JSON_PARSER.parse(IOUtils.toString(
-                    AssetEncryption.wrapInputStream(new FileInputStream(rpFolder.resolve("pack.mcmeta").toFile()))
+                    AssetEncryption.wrapInputStream(new FileInputStream(rpFolder.toPath().resolve("pack.mcmeta").toFile()))
                     , StandardCharsets.UTF_8)).getAsJsonObject();
             if (metaObj.has("zbx_rpu_server_lock")) {
                 localServerLock = metaObj.get("zbx_rpu_server_lock").getAsString();
@@ -67,10 +66,10 @@ public class ServerLockRegistry {
 
     public static void onAfterSetServerLock() {
         if (lockAllSyncedPacks) {
-            Minecraft.getInstance().getToasts().addToast(new SystemToast(SystemToast.SystemToastId.PACK_LOAD_FAILURE,
+            Minecraft.getInstance().getToasts().addToast(new SystemToast(SystemToast.SystemToastIds.PACK_LOAD_FAILURE,
                     Text.literal("同步資源包不完整而未被采用"), Text.literal("您可按 F3+T 重試下載。如有錯誤請聯絡管理人員。")
             ));
-            Minecraft.getInstance().getToasts().addToast(new SystemToast(SystemToast.SystemToastId.PACK_LOAD_FAILURE,
+            Minecraft.getInstance().getToasts().addToast(new SystemToast(SystemToast.SystemToastIds.PACK_LOAD_FAILURE,
                     Text.literal("Synced Resource Pack Incomplete and Thus not Used"), Text.literal("Press F3+T to download again. Ask the staff when error.")
             ));
         }
