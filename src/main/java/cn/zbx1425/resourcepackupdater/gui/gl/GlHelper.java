@@ -12,7 +12,6 @@ import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-
 public class GlHelper {
 
     public static void clearScreen(float r, float g, float b) {
@@ -31,7 +30,6 @@ public class GlHelper {
         RenderSystem.applyModelViewMatrix();
         lastProjectionMat = RenderSystem.getProjectionMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.enableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableDepthTest();
         RenderSystem.disableCull();
@@ -44,7 +42,7 @@ public class GlHelper {
         RenderSystem.getModelViewStack().popPose();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShader(() -> previousShader);
-        RenderSystem.setProjectionMatrix(lastProjectionMat);
+        RenderSystem.setProjectionMatrix(lastProjectionMat, VertexSorting.ORTHO);
     }
 
     public static final ResourceLocation PRELOAD_FONT_TEXTURE =
@@ -92,7 +90,7 @@ public class GlHelper {
     }
 
     public static void drawShadowString(float x1, float y1, float width, float height, float fontSize,
-                                  String text, int color, boolean monospace, boolean noWrap) {
+                                        String text, int color, boolean monospace, boolean noWrap) {
         drawString(x1 + fontSize / 16, y1 + fontSize / 16, width, height, fontSize, text, 0xFF222222, monospace, noWrap);
         drawString(x1, y1, width, height, fontSize, text, color, monospace, noWrap);
     }
@@ -171,30 +169,30 @@ public class GlHelper {
 
     public static void setMatPixel() {
         Matrix4f matrix = new Matrix4f();
-        matrix.setIdentity();
-        matrix.multiply(Matrix4f.createScaleMatrix(2, -2, 1));
-        matrix.multiply(Matrix4f.createTranslateMatrix(-0.5f, -0.5f, 0));
+        matrix.identity();
+        matrix.scale(2, -2, 1);
+        matrix.translate(-0.5f, -0.5f, 0);
         float rawWidth = Minecraft.getInstance().getWindow().getWidth();
         float rawHeight = Minecraft.getInstance().getWindow().getHeight();
-        matrix.multiply(Matrix4f.createScaleMatrix(1 / rawWidth, 1 / rawHeight, 1));
-        RenderSystem.setProjectionMatrix(matrix);
+        matrix.scale(1 / rawWidth, 1 / rawHeight, 1);
+        RenderSystem.setProjectionMatrix(matrix, VertexSorting.ORTHO);
     }
 
     public static void setMatScaledPixel() {
         Matrix4f matrix = new Matrix4f();
-        matrix.setIdentity();
-        matrix.multiply(Matrix4f.createScaleMatrix(2, -2, 1));
-        matrix.multiply(Matrix4f.createTranslateMatrix(-0.5f, -0.5f, 0));
-        matrix.multiply(Matrix4f.createScaleMatrix(1f / getWidth(), 1f / getHeight(), 1));
-        RenderSystem.setProjectionMatrix(matrix);
+        matrix.identity();
+        matrix.scale(2, -2, 1);
+        matrix.translate(-0.5f, -0.5f, 0);
+        matrix.scale(1f / getWidth(), 1f / getHeight(), 1);
+        RenderSystem.setProjectionMatrix(matrix, VertexSorting.ORTHO);
     }
 
     public static void enableScissor(float x, float y, float width, float height) {
         Matrix4f posMap = RenderSystem.getProjectionMatrix();
         Vector3f bottomLeft = new Vector3f(x, y + height, 0);
-        bottomLeft.transform(posMap);
+        bottomLeft.mulPosition(posMap);
         Vector3f topRight = new Vector3f(x + width, y, 0);
-        topRight.transform(posMap);
+        topRight.mulPosition(posMap);
         float x1 = (float)Mth.map(bottomLeft.x(), -1, 1, 0, Minecraft.getInstance().getWindow().getWidth());
         float y1 = (float)Mth.map(bottomLeft.y(), -1, 1, 0, Minecraft.getInstance().getWindow().getHeight());
         float x2 = (float)Mth.map(topRight.x(), -1, 1, 0, Minecraft.getInstance().getWindow().getWidth());
@@ -225,17 +223,17 @@ public class GlHelper {
 
     public static void setMatCenterForm(float width, float height, float widthPercent) {
         Matrix4f matrix = new Matrix4f();
-        matrix.setIdentity();
-        matrix.multiply(Matrix4f.createScaleMatrix(2, -2, 1));
-        matrix.multiply(Matrix4f.createTranslateMatrix(-0.5f, -0.5f, 0));
+        matrix.identity();
+        matrix.scale(2, -2, 1);
+        matrix.translate(-0.5f, -0.5f, 0);
         float rawWidth = Minecraft.getInstance().getWindow().getWidth();
         float rawHeight = Minecraft.getInstance().getWindow().getHeight();
-        matrix.multiply(Matrix4f.createScaleMatrix(1 / rawWidth, 1 / rawHeight, 1));
+        matrix.scale(1 / rawWidth, 1 / rawHeight, 1);
         float formRawWidth = rawWidth * widthPercent;
         float formRawHeight = height / width * formRawWidth;
-        matrix.multiply(Matrix4f.createTranslateMatrix((rawWidth - formRawWidth) / 2f, (rawHeight - formRawHeight) / 2f, 0));
-        matrix.multiply(Matrix4f.createScaleMatrix(formRawWidth / width, formRawHeight / height, 1));
-        RenderSystem.setProjectionMatrix(matrix);
+        matrix.translate((rawWidth - formRawWidth) / 2f, (rawHeight - formRawHeight) / 2f, 0);
+        matrix.scale(formRawWidth / width, formRawHeight / height, 1);
+        RenderSystem.setProjectionMatrix(matrix, VertexSorting.ORTHO);
     }
 
     private static VertexConsumer withColor(VertexConsumer vc, int color) {
