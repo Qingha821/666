@@ -6,6 +6,7 @@ import cn.zbx1425.resourcepackupdater.gui.gl.GlHelper;
 import cn.zbx1425.resourcepackupdater.mappings.Text;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.NotNull;
@@ -31,22 +32,22 @@ public class ConfigScreen extends Screen {
 
         Button btnShowLog = new Button.Builder(Text.translatable("Show Logs from Last Run"), (btn) -> {
             isShowingLog = true;
-        }).dimensions(PADDING + PADDING, 40, btnWidthInner, 20)
-                .narration(Button.DEFAULT_NARRATION)
+        }).bounds(PADDING + PADDING, 40, btnWidthInner, 20)
+                .narrationSupplier(Button.createNarrationMessage())
                 .build();
 
         Button btnReload = new Button.Builder(Text.translatable("Update & Reload"), (btn) -> {
             assert minecraft != null;
             minecraft.reloadResourcePacks();
-        }).dimensions(PADDING + btnWidthOuter + PADDING, 40, btnWidthInner, 20)
-                .narration(Button.DEFAULT_NARRATION)
+        }).bounds(PADDING + btnWidthOuter + PADDING, 40, btnWidthInner, 20)
+                .narrationSupplier(Button.createNarrationMessage())
                 .build();
 
         Button btnReturn = new Button.Builder(Text.translatable("Return"), (btn) -> {
             assert minecraft != null;
             minecraft.setScreen(null);
-        }).dimensions(PADDING + btnWidthOuter + PADDING, height - 40, btnWidthInner, 20)
-                .narration(Button.DEFAULT_NARRATION)
+        }).bounds(PADDING + btnWidthOuter + PADDING, height - 40, btnWidthInner, 20)
+                .narrationSupplier(Button.createNarrationMessage())
                 .build();
 
         addRenderableWidget(btnShowLog);
@@ -63,8 +64,8 @@ public class ConfigScreen extends Screen {
                     e.printStackTrace();
                 }
                 updateBtnEnable();
-            }).dimensions(PADDING + PADDING, btnY, btnWidthInner, 20)
-                    .narration(Button.DEFAULT_NARRATION)
+            }).bounds(PADDING + PADDING, btnY, btnWidthInner, 20)
+                    .narrationSupplier(Button.createNarrationMessage())
                     .build();
 
             sourceButtons.put(source, btnUseSource);
@@ -82,7 +83,7 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull PoseStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         if (isShowingLog) {
             GlHelper.initGlStates();
             try {
@@ -95,13 +96,12 @@ public class ConfigScreen extends Screen {
             }
             GlHelper.resetGlStates();
         } else {
-            this.fillGradient(matrices, 0, 0, this.width, this.height, 0xff014e7c, 0xff02142a);
+            guiGraphics.fillGradient(0, 0, this.width, this.height, 0xff014e7c, 0xff02142a);
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-            RenderSystem.setShaderTexture(0, GlProgressScreen.PRELOAD_HEADER_TEXTURE);
-            blit(matrices, 10, 10, 256, 16, 0, 0, 512, 32, 512, 32);
-            this.font.drawShadow(matrices, "Source Servers:", 20, 76, 0xFFFFFFFF);
-            this.font.drawShadow(matrices, "https://www.zbx1425.cn", 20, height - 40, 0xFFFFFFFF);
-            super.render(matrices, mouseX, mouseY, delta);
+            guiGraphics.blit(GlProgressScreen.PRELOAD_HEADER_TEXTURE, 10, 10, 256, 16, 0, 0, 512, 32, 512, 32);
+            guiGraphics.drawString(font, "Source Servers:", 20, 76, 0xFFFFFFFF);
+            guiGraphics.drawString(font, "https://www.zbx1425.cn", 20, height - 40, 0xFFFFFFFF);
+            super.render(guiGraphics, mouseX, mouseY, delta);
         }
     }
 }
