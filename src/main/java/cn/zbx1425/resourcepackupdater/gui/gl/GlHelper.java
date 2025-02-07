@@ -4,14 +4,14 @@ import cn.zbx1425.resourcepackupdater.ResourcePackUpdater;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
 
 public class GlHelper {
 
@@ -191,9 +191,9 @@ public class GlHelper {
 
     public static void enableScissor(float x, float y, float width, float height) {
         Matrix4f posMap = RenderSystem.getProjectionMatrix();
-        Vector4f bottomLeft = new Vector4f(x, y + height, 0, 1);
+        Vector3f bottomLeft = new Vector3f(x, y + height, 0);
         bottomLeft.transform(posMap);
-        Vector4f topRight = new Vector4f(x + width, y, 0, 1);
+        Vector3f topRight = new Vector3f(x + width, y, 0);
         topRight.transform(posMap);
         float x1 = (float)Mth.map(bottomLeft.x(), -1, 1, 0, Minecraft.getInstance().getWindow().getWidth());
         float y1 = (float)Mth.map(bottomLeft.y(), -1, 1, 0, Minecraft.getInstance().getWindow().getHeight());

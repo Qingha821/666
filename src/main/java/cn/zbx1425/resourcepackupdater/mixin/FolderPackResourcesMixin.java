@@ -5,7 +5,7 @@ import cn.zbx1425.resourcepackupdater.drm.AssetEncryption;
 import cn.zbx1425.resourcepackupdater.drm.ServerLockRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.AbstractPackResources;
-import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PathPackResources ;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.ResourcePackFileNotFoundException;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.function.Predicate;
 
-@Mixin(FolderPackResources.class)
+@Mixin(PathPackResources .class)
 public abstract class FolderPackResourcesMixin extends AbstractPackResources {
 
     @Unique
