@@ -51,9 +51,6 @@ public abstract class FolderPackResourcesMixin extends AbstractPackResources {
     void getResource(String resourcePath, CallbackInfoReturnable<InputStream> cir) throws IOException {
         if (getCanonicalFile().equals(ResourcePackUpdater.CONFIG.packBaseDirFile.value)) {
             File file = this.getFile(resourcePath);
-            if (file == null || ServerLockRegistry.shouldRefuseProvidingFile(resourcePath)) {
-                throw new ResourcePackFileNotFoundException(this.file, resourcePath);
-            }
             FileInputStream fis = new FileInputStream(file);
             cir.setReturnValue(AssetEncryption.wrapInputStream(fis));
             cir.cancel();
