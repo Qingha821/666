@@ -1,15 +1,24 @@
+package cn.zbx1425.resourcepackupdater.mixin;
+
+import cn.zbx1425.resourcepackupdater.ResourcePackUpdater;
+import net.minecraft.client.gui.screens.OptionsScreen;
+import net.minecraft.server.packs.repository.PackRepository;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(OptionsScreen.class)
 public class OptionsScreenMixin {
 
     @Inject(
-        method = "m_232823_", // 这是混淆后的方法名，对应 updatePackList
-        // 或者使用 "updatePackList" 如果你使用的是 Yarn mappings
+        method = "updatePackList(Lnet/minecraft/server/packs/repository/PackRepository;)V",
         at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/client/Options;m_92147_()V" // 混淆后的 save() 方法
-            // 或者使用 "Lnet/minecraft/client/Options;save()V" 如果使用 Yarn mappings
+            value = "INVOKE", 
+            target = "Lnet/minecraft/client/Options;save()V"
         )
     )
-    private void onUpdatePackList(PackRepository packRepository, CallbackInfo ci) {
+    private void updatePackList(PackRepository packRepository, CallbackInfo ci) {
         ResourcePackUpdater.modifyPackList();
     }
 }
