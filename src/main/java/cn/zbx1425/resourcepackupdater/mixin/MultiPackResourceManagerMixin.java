@@ -16,26 +16,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
-#if MC_VERSION >= "11800"
 @Mixin(MultiPackResourceManager.class)
-#else
-@Mixin(SimpleReloadableResourceManager.class)
-#endif
 public class MultiPackResourceManagerMixin {
 
+    private List<PackResources> packResources; // 影子字段，获取资源包列表
+
     @Inject(at = @At("HEAD"), method = "getResource", cancellable = true)
-#if MC_VERSION >= "11900"
     void getResource(ResourceLocation resourceLocation, CallbackInfoReturnable<Optional<Resource>> cir) {
-#else
-    void getResource(ResourceLocation resourceLocation, CallbackInfoReturnable<Resource> cir) {
-#endif
         if (resourceLocation.getNamespace().equals(ResourcePackUpdater.MOD_ID)) {
-#if MC_VERSION >= "11900"
-            cir.setReturnValue(Optional.of(new PreloadTextureResource(resourceLocation)));
-#else
-            cir.setReturnValue(new PreloadTextureResource(resourceLocation));
-#endif
-            cir.cancel();
+            if (!packResources.isEmpty()) {
+                PackResources firstPack = packResources.get(0); // 选取第一个资源包（如果有）
+                cir.setReturnValue(Optional.of(new PreloadTextureResource(resourceLocation, firstPack)));
+                cir.cancel();
+            }
         }
     }
 }
