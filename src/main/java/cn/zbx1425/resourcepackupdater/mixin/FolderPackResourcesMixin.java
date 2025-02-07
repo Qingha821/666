@@ -50,7 +50,9 @@ public abstract class FolderPackResourcesMixin extends AbstractPackResources {
     }
 
     @Shadow
-    private File getFile(String string) { return null; }
+    private File getFile(String string) {
+        return null;
+    }
 
     @Inject(method = "getResource", at = @At("HEAD"), cancellable = true)
     void getResource(String resourcePath, CallbackInfoReturnable<InputStream> cir) throws IOException {
@@ -65,7 +67,6 @@ public abstract class FolderPackResourcesMixin extends AbstractPackResources {
     @Inject(method = "hasResource", at = @At("HEAD"), cancellable = true)
     void hasResource(String resourcePath, CallbackInfoReturnable<Boolean> cir) {
         if (getCanonicalFile().equals(ResourcePackUpdater.CONFIG.packBaseDirFile.value)) {
-            // 修复：检查具体的 resourcePath 而不是 null
             if (ServerLockRegistry.shouldRefuseProvidingFile(resourcePath)) {
                 cir.setReturnValue(false);
                 cir.cancel();
@@ -80,9 +81,7 @@ public abstract class FolderPackResourcesMixin extends AbstractPackResources {
     void getResources(PackType type, String namespace, String path, int maxDepth, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Collection<ResourceLocation>> cir) {
 #endif
         if (getCanonicalFile().equals(ResourcePackUpdater.CONFIG.packBaseDirFile.value)) {
-            // 修复：需要根据具体的资源路径进行判断，这里假设需要根据 namespace 和 path 构造
-            String resourcePath = namespace + "/" + path;
-            if (ServerLockRegistry.shouldRefuseProvidingFile(resourcePath)) {
+            if (ServerLockRegistry.shouldRefuseProvidingFile(null)) {
                 cir.setReturnValue(Collections.emptyList());
                 cir.cancel();
             }
@@ -92,9 +91,7 @@ public abstract class FolderPackResourcesMixin extends AbstractPackResources {
     @Inject(method = "getNamespaces", at = @At("HEAD"), cancellable = true)
     void getNamespaces(PackType type, CallbackInfoReturnable<Set<String>> cir) {
         if (getCanonicalFile().equals(ResourcePackUpdater.CONFIG.packBaseDirFile.value)) {
-            // 修复：需要根据具体的资源路径进行判断，这里假设需要根据 type 构造一个合适的路径
-            String resourcePath = type.getDirectory() + "/";
-            if (ServerLockRegistry.shouldRefuseProvidingFile(resourcePath)) {
+            if (ServerLockRegistry.shouldRefuseProvidingFile(null)) {
                 cir.setReturnValue(Collections.emptySet());
                 cir.cancel();
             }
