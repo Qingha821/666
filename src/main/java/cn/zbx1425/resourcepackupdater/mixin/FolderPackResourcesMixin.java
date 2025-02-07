@@ -73,11 +73,8 @@ public abstract class FolderPackResourcesMixin extends AbstractPackResources {
     }
 
     @Inject(method = "getResources", at = @At("HEAD"), cancellable = true)
-#if MC_VERSION >= "11900"
+
     void getResources(PackType type, String namespace, String path, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Collection<ResourceLocation>> cir) {
-#else
-        void getResources(PackType type, String namespace, String path, int maxDepth, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Collection<ResourceLocation>> cir) {
-#endif
             if (getCanonicalFile().equals(ResourcePackUpdater.CONFIG.packBaseDirFile.value)) {
                 if (ServerLockRegistry.shouldRefuseProvidingFile(null)) {
                     cir.setReturnValue(Collections.emptyList());
@@ -87,7 +84,7 @@ public abstract class FolderPackResourcesMixin extends AbstractPackResources {
         }
 
         @Inject(method = "getNamespaces", at = @At("HEAD"), cancellable = true)
-        void getNamespaces(PackType type, CallbackInfoReturnable<Set<String>> cir) {
+        void getResources(PackType type, String namespace, String path, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Collection<ResourceLocation>> cir) {
             if (getCanonicalFile().equals(ResourcePackUpdater.CONFIG.packBaseDirFile.value)) {
                 if (ServerLockRegistry.shouldRefuseProvidingFile(null)) {
                     cir.setReturnValue(Collections.emptySet());
