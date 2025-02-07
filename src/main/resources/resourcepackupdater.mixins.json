@@ -4,6 +4,7 @@
   "package": "cn.zbx1425.resourcepackupdater.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "FolderPackResourcesMixin",
     "PlayerListMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin"
