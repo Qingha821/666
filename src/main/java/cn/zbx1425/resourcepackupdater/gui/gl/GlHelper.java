@@ -42,7 +42,7 @@ public class GlHelper {
         RenderSystem.getModelViewStack().popPose();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShader(() -> previousShader);
-        RenderSystem.setProjectionMatrix(lastProjectionMat, VertexSorting.ORTHO);
+        RenderSystem.setProjectionMatrix(lastProjectionMat);
     }
 
     public static final ResourceLocation PRELOAD_FONT_TEXTURE =
@@ -175,7 +175,7 @@ public class GlHelper {
         float rawWidth = Minecraft.getInstance().getWindow().getWidth();
         float rawHeight = Minecraft.getInstance().getWindow().getHeight();
         matrix.scale(1 / rawWidth, 1 / rawHeight, 1);
-        RenderSystem.setProjectionMatrix(matrix, VertexSorting.ORTHO);
+        RenderSystem.setProjectionMatrix(matrix);
     }
 
     public static void setMatScaledPixel() {
@@ -184,7 +184,7 @@ public class GlHelper {
         matrix.scale(2, -2, 1);
         matrix.translate(-0.5f, -0.5f, 0);
         matrix.scale(1f / getWidth(), 1f / getHeight(), 1);
-        RenderSystem.setProjectionMatrix(matrix, VertexSorting.ORTHO);
+        RenderSystem.setProjectionMatrix(matrix);
     }
 
     public static void enableScissor(float x, float y, float width, float height) {
@@ -233,7 +233,7 @@ public class GlHelper {
         float formRawHeight = height / width * formRawWidth;
         matrix.translate((rawWidth - formRawWidth) / 2f, (rawHeight - formRawHeight) / 2f, 0);
         matrix.scale(formRawWidth / width, formRawHeight / height, 1);
-        RenderSystem.setProjectionMatrix(matrix, VertexSorting.ORTHO);
+        RenderSystem.setProjectionMatrix(matrix);
     }
 
     private static VertexConsumer withColor(VertexConsumer vc, int color) {
