@@ -52,6 +52,9 @@ public class GlHelper {
     private static BufferBuilder bufferBuilder;
 
     public static void begin(ResourceLocation texture) {
+        if (bufferBuilder != null && bufferBuilder.building()) {
+            end(); 
+        }
         bufferBuilder = Tesselator.getInstance().getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         Minecraft.getInstance().getTextureManager().getTexture(texture).setFilter(true, false);
@@ -59,8 +62,10 @@ public class GlHelper {
     }
 
     public static void end() {
-        Tesselator.getInstance().end();
-    }
+        if (bufferBuilder != null && bufferBuilder.building()) {
+            Tesselator.getInstance().end();
+            bufferBuilder = null; 
+        }
 
     public static void swapBuffer() throws MinecraftStoppingException {
         Window window = Minecraft.getInstance().getWindow();
