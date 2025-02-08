@@ -1,7 +1,6 @@
 package cn.zbx1425.resourcepackupdater.mixin;
 
 import cn.zbx1425.resourcepackupdater.ResourcePackUpdater;
-import cn.zbx1425.resourcepackupdater.ResourcePackUpdaterClient;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.server.packs.repository.PackRepository;
