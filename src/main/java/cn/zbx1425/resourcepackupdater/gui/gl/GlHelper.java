@@ -21,6 +21,7 @@ public class GlHelper {
 
     private static ShaderInstance previousShader;
     private static Matrix4f lastProjectionMat;
+    private static boolean isRendering = false;
 
     public static void initGlStates() {
         previousShader = RenderSystem.getShader();
