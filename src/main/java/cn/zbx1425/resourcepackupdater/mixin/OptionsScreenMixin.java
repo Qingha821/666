@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class OptionsScreenMixin {
 
     @Inject(
-        method = "updateResourcePacks",
+        method = " updateResourcePacks(Lnet/minecraft/server/packs/repository/PackRepository;)V",",
         at = @At(
             value = "INVOKE", 
             target = "Lnet/minecraft/client/Options;save()V"
