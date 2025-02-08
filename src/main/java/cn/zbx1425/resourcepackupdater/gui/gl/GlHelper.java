@@ -66,6 +66,7 @@ public class GlHelper {
             Tesselator.getInstance().end();
             bufferBuilder = null; 
         }
+    }
 
     public static void swapBuffer() throws MinecraftStoppingException {
         Window window = Minecraft.getInstance().getWindow();
